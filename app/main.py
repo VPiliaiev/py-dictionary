@@ -13,13 +13,15 @@ class Dictionary:
         index = key_hash % self.capacity
         bucket = self.table[index]
 
-        for i, (existing_key, existing_value, existing_hash) \
-                in enumerate(bucket):
+        for i, (existing_key, existing_value, existing_hash) in enumerate(bucket):
             if existing_key == key:
                 bucket[i] = (key, value, key_hash)
                 return
         bucket.append((key, value, key_hash))
         self.size += 1
+
+        if self.size / self.capacity > self.load_factor_threshold:
+            self._resize()
 
     def __getitem__(self, key: Any) -> Any:
         key_hash = hash(key)
